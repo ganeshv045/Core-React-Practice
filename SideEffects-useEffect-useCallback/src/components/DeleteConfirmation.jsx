@@ -1,15 +1,28 @@
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
+
+const TIMER = 3000;
 
 export default function DeleteConfirmation({ onConfirm, onCancel }) {
+  const [remainingTime, setRemainingTime] = useState(TIMER);
+
   useEffect(() => {
-    console.log("Timer set");
-    const timer = setTimeout(() => {
-      onConfirm();
-    }, 3000);
+    const timerId = setInterval(() => {
+      setRemainingTime((prevTimer) => prevTimer - 10)
+    }, 10)
 
     return () => {
-      console.log("Timer cleared");
-      
+      console.log("interval cleared");
+      clearTimeout(timerId);
+    }
+  }, [])
+
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      onConfirm();
+    }, TIMER);
+
+    return () => {
+      console.log("timer cleared");
       clearTimeout(timer);
     }
   }, [onConfirm])
@@ -26,6 +39,7 @@ export default function DeleteConfirmation({ onConfirm, onCancel }) {
           Yes
         </button>
       </div>
+      <progress value={remainingTime} max={TIMER} />
     </div>
   );
 }
